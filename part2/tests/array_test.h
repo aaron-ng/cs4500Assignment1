@@ -10,6 +10,7 @@
 class ArrayTest : public Test_template {
 
     public:
+        static const int _stressTestVal = 10000;
 
         virtual void run() {
             // OBJECT LIST
@@ -22,7 +23,6 @@ class ArrayTest : public Test_template {
             indexOfReturnsSizeWhenMissingObj();
             equalsWorksInOrderObj();
             equalsWorksOutOfOrderObj();
-            multiplePushGetSetObj();
 
             // STRING LIST
 
@@ -34,6 +34,7 @@ class ArrayTest : public Test_template {
             indexOfReturnsSizeWhenMissingStr();
             equalsWorksInOrderStr();
             equalsWorksOutOfOrderStr();
+            arrayStressTestStr();
 
             // Int LIST
 
@@ -44,6 +45,7 @@ class ArrayTest : public Test_template {
             indexOfReturnsSizeWhenMissingInt();
             equalsWorksInOrderInt();
             equalsWorksOutOfOrderInt();
+            arrayStressTestInt();
 
             // Float LIST
 
@@ -54,6 +56,7 @@ class ArrayTest : public Test_template {
             indexOfReturnsSizeWhenMissingFloat();
             equalsWorksInOrderFloat();
             equalsWorksOutOfOrderFloat();
+            arrayStressTestFloat();
 
             // Bool LIST
 
@@ -64,6 +67,7 @@ class ArrayTest : public Test_template {
             indexOfReturnsSizeWhenMissingBool();
             equalsWorksInOrderBool();
             equalsWorksOutOfOrderBool();
+            arrayStressTestBool();
         }
 
         // OBJECT LIST
@@ -100,7 +104,7 @@ class ArrayTest : public Test_template {
             t_true(arr->get(0)->equals(str));
             t_true(str->equals(arr->get(0)));
             t_true(str == arr->get(0));
-            t_true(arr->size == 1);
+            t_true(arr->size() == 1);
 
             delete arr;
             delete str;
@@ -196,43 +200,6 @@ class ArrayTest : public Test_template {
             OK("ArrayTest.equalsWorksInOrderObj");
         }
 
-        void arrayStressTestStr() {
-            StringArray* arr0 = new StringArray();
-
-            // Testing push_back
-            for (int i = 0; i < 10000; i++) {
-                char* charArr = new char(6);
-                strcpy(charArr, "test");
-                charArr[4] = i;
-                charArr[5] = '\0';
-                String* currStr = new String(charArr);
-                arr0->push_back(currStr);
-
-                delete charArr;
-            }
-
-            // Testing get
-            t_true(arr0->size() == 50);
-            t_true(arr0->get(38)->value == "test38");
-
-            // Testing set
-            String* test38 = arr0->get(38);
-            String* replace38 = new String("replace38");
-            arr0->set(38, replace38);
-            t_true(arr0->get(38)->value == "replace38");
-            t_true(arr0->get(38)->hash() == replace38->hash());
-
-            // Testing index_of
-            t_true(arr0->index_of(test38) == arr0->size());
-            t_true(arr0->index_of(replace38) == 38);
-
-            delete test38;
-            for (int i = 0; i < 10000; i++) {
-                delete arr0->get(i);
-            }
-            delete arr0;
-        }
-
         // String
 
         void testConstructorInitsToNullptrStr() {
@@ -267,7 +234,7 @@ class ArrayTest : public Test_template {
             t_true(arr->get(0)->equals(str));
             t_true(str->equals(arr->get(0)));
             t_true(str == arr->get(0));
-            t_true(arr->size == 1);
+            t_true(arr->size() == 1);
 
             delete arr;
             delete str;
@@ -365,6 +332,43 @@ class ArrayTest : public Test_template {
             OK("ArrayTest.equalsWorksInOrderStr");
         }
 
+        void arrayStressTestStr() {
+            StringArray* arr0 = new StringArray();
+
+            // Testing push_back
+            for (int i = 0; i < _stressTestVal; i++) {
+                char* charArr = new char(6);
+                strcpy(charArr, "test");
+                charArr[4] = i;
+                charArr[5] = '\0';
+                String* currStr = new String(charArr);
+                arr0->push_back(currStr);
+
+                delete charArr;
+            }
+
+            // Testing get
+            t_true(arr0->size() == _stressTestVal);
+            t_true(strcmp(arr0->get(38)->value(), "test38") == 0);
+
+            // Testing set
+            String* test38 = arr0->get(38);
+            String* replace38 = new String("replace38");
+            arr0->set(38, replace38);
+            t_true(strcmp(arr0->get(38)->value(), "replace38") == 0);
+            t_true(arr0->get(38)->hash() == replace38->hash());
+
+            // Testing index_of
+            t_true(arr0->index_of(test38) == arr0->size());
+            t_true(arr0->index_of(replace38) == 38);
+
+            delete test38;
+            for (int i = 0; i < 10000; i++) {
+                delete arr0->get(i);
+            }
+            delete arr0;
+            OK("ArrayTest.arrayStressTestStr");
+        }
 
         // Int
 
@@ -389,7 +393,7 @@ class ArrayTest : public Test_template {
 
             t_true(i1 == arr->get(0));
             t_true(arr->get(0) == i1);
-            t_true(arr->size == 1);
+            t_true(arr->size() == 1);
 
             delete arr;
             OK("ArrayTest.pushBackInt");
@@ -481,6 +485,30 @@ class ArrayTest : public Test_template {
             OK("ArrayTest.equalsWorksInOrderInt");
         }
 
+        void arrayStressTestInt() {
+            IntArray* arr0 = new IntArray();
+
+            // Testing push_back
+            for (int i = 0; i < _stressTestVal; i++) {
+                arr0->push_back(i);
+            }
+
+            // Testing get
+            t_true(arr0->size() == _stressTestVal);
+            t_true(arr0->get(38) == 38);
+
+            // Testing set
+            arr0->set(38, 100038);
+            t_true(arr0->get(38) == 100038);
+
+            // Testing index_of
+            t_true(arr0->index_of(38) == arr0->size());
+            t_true(arr0->index_of(100038) == 38);
+
+            delete arr0;
+            OK("ArrayTest.arrayStressTestInt");
+        }
+
         // Float
 
         void getAndsetWorkFloat() {
@@ -504,7 +532,7 @@ class ArrayTest : public Test_template {
 
             t_true(f1 == arr->get(0));
             t_true(arr->get(0) == f1);
-            t_true(arr->size == 1);
+            t_true(arr->size() == 1);
 
             delete arr;
             OK("ArrayTest.pushBackFloat");
@@ -596,6 +624,30 @@ class ArrayTest : public Test_template {
             OK("ArrayTest.equalsWorksInOrderFloat");
         }
 
+        void arrayStressTestFloat() {
+            FloatArray* arr0 = new FloatArray();
+
+            // Testing push_back
+            for (float i = 0.0; i < _stressTestVal; i++) {
+                arr0->push_back(i);
+            }
+
+            // Testing get
+            t_true(arr0->size() == _stressTestVal);
+            t_true(arr0->get(38) == 38.0);
+
+            // Testing set
+            arr0->set(38, 100038.0);
+            t_true(arr0->get(38) == 100038.0);
+
+            // Testing index_of
+            t_true(arr0->index_of(38.0) == arr0->size());
+            t_true(arr0->index_of(100038.0) == 38);
+            
+            delete arr0;
+            OK("ArrayTest.arrayStressTestFloat");
+        }
+
         // Bool
 
         void getAndsetWorkBool() {
@@ -619,7 +671,7 @@ class ArrayTest : public Test_template {
 
             t_true(b1 == arr->get(0));
             t_true(arr->get(0) == b1);
-            t_true(arr->size == 1);
+            t_true(arr->size() == 1);
 
             delete arr;
             OK("ArrayTest.pushBackBool");
@@ -709,5 +761,30 @@ class ArrayTest : public Test_template {
             delete arr1;
 
             OK("ArrayTest.equalsWorksInOrderBool");
+        }
+
+        void arrayStressTestBool() {
+            BoolArray* arr0 = new BoolArray();
+
+            // Testing push_back
+            for (int i = 0; i < _stressTestVal; i++) {
+                arr0->push_back(true);
+            }
+
+            // Testing get
+            t_true(arr0->size() == _stressTestVal);
+            t_true(arr0->get(38) == true);
+
+            // Testing set
+            arr0->set(38, false);
+            t_true(arr0->get(38) == false);
+
+            // Testing index_of
+            t_true(arr0->index_of(true) == 0);
+            t_true(arr0->index_of(false) == 38);
+            
+            delete arr0;
+
+            OK("ArrayTest.arrayStressTestBool");
         }
 };
