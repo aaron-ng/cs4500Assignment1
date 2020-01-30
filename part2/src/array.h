@@ -13,8 +13,7 @@ class ObjectArray: public Object {
     public:
 
         /**
-         * Creates a new object array. All of the elements in the array are initialized to nullptr.
-         * @param size The capacity of the array. Should be > 0, otherwise the program will exit.
+         * Creates a new Object array.
          */
         ObjectArray() : Object() {}
 
@@ -77,8 +76,7 @@ class StringArray: public Object {
         // NOTE: StringArray can be implementing using ObjectArray for code reuse
 
         /**
-         * Creates a new object array. All of the elements in the array are initialized to nullptr.
-         * @param size The capacity of the array. Should be > 0, otherwise the program will exit.
+         * Creates a new String array.
          */
         StringArray() : Object() {}
 
@@ -113,7 +111,7 @@ class StringArray: public Object {
          * @param i The index of the element to return
          * @return The element at i
          */
-        Object* get(size_t i) {};
+        String* get(size_t i) {};
 
         /**
          * Sets the object at the given index. Indices are bound checked. Cannot set out of size bounds

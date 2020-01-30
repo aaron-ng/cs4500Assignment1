@@ -22,6 +22,7 @@ class ArrayTest : public Test_template {
             indexOfReturnsSizeWhenMissingObj();
             equalsWorksInOrderObj();
             equalsWorksOutOfOrderObj();
+            multiplePushGetSetObj();
 
             // STRING LIST
 
@@ -193,6 +194,43 @@ class ArrayTest : public Test_template {
             delete str1;
 
             OK("ArrayTest.equalsWorksInOrderObj");
+        }
+
+        void arrayStressTestStr() {
+            StringArray* arr0 = new StringArray();
+
+            // Testing push_back
+            for (int i = 0; i < 10000; i++) {
+                char* charArr = new char(6);
+                strcpy(charArr, "test");
+                charArr[4] = i;
+                charArr[5] = '\0';
+                String* currStr = new String(charArr);
+                arr0->push_back(currStr);
+
+                delete charArr;
+            }
+
+            // Testing get
+            t_true(arr0->size() == 50);
+            t_true(arr0->get(38)->value == "test38");
+
+            // Testing set
+            String* test38 = arr0->get(38);
+            String* replace38 = new String("replace38");
+            arr0->set(38, replace38);
+            t_true(arr0->get(38)->value == "replace38");
+            t_true(arr0->get(38)->hash() == replace38->hash());
+
+            // Testing index_of
+            t_true(arr0->index_of(test38) == arr0->size());
+            t_true(arr0->index_of(replace38) == 38);
+
+            delete test38;
+            for (int i = 0; i < 10000; i++) {
+                delete arr0->get(i);
+            }
+            delete arr0;
         }
 
         // String
