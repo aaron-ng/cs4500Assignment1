@@ -417,7 +417,7 @@ class ArrayTest : public Test_template {
 
             arr->push_back(i1);
 
-            t_true(arr->index_of(i1) == 4);
+            t_true(arr->index_of(i1) == 0);
 
             delete arr;
             OK("ArrayTest.indexOfFindsObjectInt");
@@ -556,7 +556,7 @@ class ArrayTest : public Test_template {
 
             arr->push_back(f1);
 
-            t_true(arr->index_of(f1) == 4);
+            t_true(arr->index_of(f1) == 0);
 
             delete arr;
             OK("ArrayTest.indexOfFindsObjectFloat");
@@ -695,7 +695,7 @@ class ArrayTest : public Test_template {
 
             arr->push_back(b1);
 
-            t_true(arr->index_of(b1) == 4);
+            t_true(arr->index_of(b1) == 0);
 
             delete arr;
             OK("ArrayTest.indexOfFindsObjectBool");
